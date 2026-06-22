@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Библиотека промптов · просто в онлайн</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Mulish:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --purple:#9b8fcf;
+    --purple-dark:#3c3489;
+    --bg:#f5f3ef;
+    --bg-soft:#f2f0fb;
+    --card:#ffffff;
+    --text:#2c2c2a;
+    --text-soft:#5f5e5a;
+    --border:#e3ddf5;
+    --radius:9px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Mulish', sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    line-height:1.6;
+  }
+  header{
+    background:var(--bg-soft);
+    padding:32px 20px 24px;
+    border-bottom:1px solid var(--border);
+  }
+  header .inner{
+    max-width:920px;
+    margin:0 auto;
+  }
+  h1{
+    font-family:'Unbounded', sans-serif;
+    font-weight:600;
+    font-size:28px;
+    margin:0 0 6px;
+    color:var(--purple-dark);
+  }
+  header p{
+    margin:0;
+    color:var(--text-soft);
+    font-size:15px;
+  }
+  main{
+    max-width:920px;
+    margin:0 auto;
+    padding:24px 20px 60px;
+  }
+  .controls{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-bottom:24px;
+  }
+  .controls input[type="text"]{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    font-family:'Mulish', sans-serif;
+    font-size:15px;
+    background:var(--card);
+    color:var(--text);
+  }
+  .filters{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:10px;
+  }
+  .filters select{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    font-family:'Mulish', sans-serif;
+    font-size:14px;
+    background:var(--card);
+    color:var(--text);
+  }
+  .count{
+    font-size:14px;
+    color:var(--text-soft);
+    margin-bottom:16px;
+  }
+  .grid{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:18px 20px;
+  }
+  .card h3{
+    font-family:'Unbounded', sans-serif;
+    font-weight:500;
+    font-size:17px;
+    margin:0 0 10px;
+    color:var(--text);
+  }
+  .tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-bottom:12px;
+  }
+  .tag{
+    font-size:12px;
+    padding:3px 10px;
+    border-radius:999px;
+    background:var(--bg-soft);
+    color:var(--purple-dark);
+    font-weight:500;
+  }
+  .tag.diff-base{ background:#e7f4ec; color:#1f6b41; }
+  .tag.diff-mid{ background:#fdf1de; color:#8a5a17; }
+  .tag.diff-adv{ background:#fbe9ec; color:#9a2f3f; }
+  .prompt-text{
+    background:var(--bg-soft);
+    border-radius:6px;
+    padding:12px 14px;
+    font-size:13.5px;
+    white-space:pre-wrap;
+    color:var(--text);
+    margin-bottom:12px;
+    font-family:'Mulish', monospace, sans-serif;
+  }
+  .copy-btn{
+    border:1px solid var(--border);
+    background:var(--card);
+    color:var(--purple-dark);
+    font-family:'Mulish', sans-serif;
+    font-size:13px;
+    font-weight:500;
+    padding:8px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    transition:background .15s;
+  }
+  .copy-btn:hover{ background:var(--bg-soft); }
+  .copy-btn.copied{ background:#e7f4ec; color:#1f6b41; border-color:#cfe9d8; }
+  .empty{
+    text-align:center;
+    color:var(--text-soft);
+    padding:40px 0;
+    font-size:15px;
+  }
+  footer{
+    text-align:center;
+    font-size:12px;
+    color:var(--text-soft);
+    padding:20px;
+  }
+  @media (max-width: 640px){
+    .filters{ grid-template-columns:repeat(2, 1fr); }
+    h1{ font-size:24px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="inner">
+    <h1>Библиотека промптов</h1>
+    <p>Готовые промпты для работы ассистента — фильтруй по задаче, роли, модулю и сложности</p>
+  </div>
+</header>
+
+<main>
+  <div class="controls">
+    <input type="text" id="search" placeholder="Поиск по названию или тексту промпта">
+    <div class="filters">
+      <select id="f-task"><option value="">Задача: все</option></select>
+      <select id="f-role"><option value="">Роль: все</option></select>
+      <select id="f-diff"><option value="">Сложность: все</option></select>
+    </div>
+  </div>
+
+  <div class="count" id="count"></div>
+  <div class="grid" id="list"></div>
+  <div class="empty" id="empty" style="display:none;">Ничего не найдено — попробуй изменить запрос или фильтры</div>
+</main>
+
+<footer>Материал для внутреннего использования · alishkas_</footer>
+
+<script>
+const DATA = [
+{id:1,title:"Ответ недовольному клиенту",format:"Промт",diff:"Базовый",task:["Письма/рассылки"],role:["Ассистент"],module:"Модуль 2 · Проджект-ассистент",
+text:"Напиши вежливый ответ клиенту, который недоволен [ситуация].\nТон — спокойный, без оправданий, с решением."},
+{id:2,title:"Напоминание о встрече",format:"Промт",diff:"Базовый",task:["Письма/рассылки"],role:["Ассистент"],module:"Модуль 2 · Проджект-ассистент",
+text:"Напиши письмо с напоминанием о встрече завтра в [время].\nКоротко, дружелюбно, без воды."},
+{id:3,title:"Переписать письмо вежливее / короче / официальнее",format:"Промт",diff:"Базовый",task:["Письма/рассылки"],role:["Ассистент"],module:"Модуль 2 · Проджект-ассистент",
+text:"Перепиши это письмо более вежливо / более коротко / более официально:\n[вставь текст]"},
+{id:4,title:"Расшифровка созвона → задачи и дедлайны",format:"Промт",diff:"Средний",task:["Планёрки"],role:["Ассистент","Проджект"],module:"Модуль 2 · Проджект-ассистент",
+text:"Вот расшифровка созвона. Вытащи из неё:\n- список задач\n- кто ответственный\n- дедлайны\nОформи в виде таблицы.\n[вставь текст расшифровки]"},
+{id:5,title:"Структурировать текст в список с заголовками",format:"Промт",diff:"Базовый",task:["Документы"],role:["Ассистент"],module:"Модуль 2 · Проджект-ассистент",
+text:"Структурируй этот текст в понятный список с заголовками:\n[вставь текст]"},
+{id:6,title:"Написать пост / описание / анонс",format:"Промт",diff:"Базовый",task:["Контент"],role:["Эксперт/блогер"],module:"Модуль 2 · Проджект-ассистент",
+text:"Напиши [пост/описание/анонс] на тему [тема].\nАудитория: [кто читает].\nТон: живой, без канцелярита, коротко."},
+{id:7,title:"Сделать текст человечнее",format:"Промт",diff:"Базовый",task:["Контент"],role:["Ассистент","Эксперт/блогер"],module:"Модуль 2 · Проджект-ассистент",
+text:"Сделай этот текст более человечным.\nУбери канцелярит, клише и официоз.\nПиши как живой человек:\n[вставь текст]"},
+{id:8,title:"5 вариантов заголовка",format:"Промт",diff:"Базовый",task:["Контент"],role:["Эксперт/блогер"],module:"Модуль 2 · Проджект-ассистент",
+text:"Придумай 5 вариантов заголовка для [тема].\nКоротко, цепляющие, без пафоса."},
+{id:9,title:"Сравнение двух вариантов по критериям",format:"Промт",diff:"Средний",task:["Аналитика","Исследование"],role:["Ассистент"],module:"Модуль 2 · Проджект-ассистент",
+text:"Сравни [вариант 1] и [вариант 2] по критериям:\nцена, качество, удобство.\nОформи в таблицу."},
+{id:10,title:"Плюсы и минусы продукта / решения",format:"Промт",diff:"Базовый",task:["Исследование"],role:["Ассистент"],module:"Модуль 2 · Проджект-ассистент",
+text:"Найди плюсы и минусы [продукт / услуга / решение].\nКоротко, по делу."},
+{id:11,title:"Универсальный промпт для любой задачи",format:"Промт",diff:"Базовый",task:[],role:["Ассистент"],module:"Универсальный",
+text:"Ты — опытный ассистент.\nЗадача: [опиши задачу].\nАудитория: [кто будет читать или использовать].\nФормат: [список / таблица / текст / письмо].\nТон: [официальный / дружелюбный / нейтральный]."},
+{id:12,title:"Редактирование текста (2 шага)",format:"Промт",diff:"Средний",task:["Контент"],role:["Ассистент","Эксперт/блогер"],module:"Модуль 2 · Проджект-ассистент",
+text:"Ты опытный редактор. Я дам тебе текст, который написал. Действуй в два шага.\nСначала предложи исправления в тексте, которые сделают его более увлекательным. Проанализируй структуру текста, предложения, потенциальную аудиторию и так далее. Посоветуй всё, что может сделать текст лучше. Затем перепиши мой текст на основе рекомендаций, которые ты дал мне на первом шаге.\nРазмышляй пошагово. Задавай любые уточняющие вопросы, если это необходимо.\nМой текст: (здесь введите ваш текст)."},
+{id:13,title:"5 идей для продвижения через Instagram",format:"Промт",diff:"Базовый",task:["Контент","Стратегия"],role:["Маркетолог"],module:"Модуль 2 · Проджект-ассистент",
+text:"Я [ваша ниша или в чем вы эксперт]. Помоги мне придумать 5 идей для продвижения моего [укажите продукт или услугу] через Instagram. Эти идеи должны быть ориентированы на увеличение продаж и привлечение новых клиентов."},
+{id:14,title:"Подпись к посту / Reels",format:"Промт",diff:"Базовый",task:["Контент"],role:["Эксперт/блогер"],module:"Модуль 2 · Проджект-ассистент",
+text:"Ты гениальный маркетолог. Как предпринимателю, управляющему бизнесом в области [укажите ваш бизнес], я хочу помочь своей аудитории достичь [укажите цели]. Создайте подпись к посту на тему [укажите тему]."},
+{id:15,title:"Пост по теме контент-плана + триггерный заголовок",format:"Промт",diff:"Средний",task:["Контент"],role:["Эксперт/блогер"],module:"Модуль 2 · Проджект-ассистент",
+text:"Напиши мне пост на тему [указываете свою тему]. Пост должен быть актуальным, вовлекающим, способствовать росту охватов и привлечению новых подписчиков.\nТакже придумай триггерный заголовок, он должен быть мощными, вызывать эмоции и привлекать внимание моей целевой аудитории с первых секунд.\nПредложи 2 варианта поста и 5 заголовков."},
+{id:16,title:"5 вопросов для уникальной точки зрения блога",format:"Промт",diff:"Средний",task:["Контент","Стратегия"],role:["Эксперт/блогер"],module:"Модуль 2 · Проджект-ассистент",
+text:"Представь, что ты медиа-редактор. Я хочу завести блог, но не знаю, чем выделяться.\nЗадай мне 5 вопросов, которые помогут выявить мою уникальную точку зрения — то, через что можно узнавать именно меня."},
+{id:17,title:"Что мешает жизни мечты (пирамида Дилтса)",format:"Промт",diff:"Продвинутый",task:["Саморазвитие"],role:[],module:"Универсальный",
+text:"Ты — мой стратегический коуч. Ты умеешь соединить взгляд в будущее с честностью к настоящему. Ты не упрощаешь, но и не драматизируешь. Ты помогаешь мне вычленить то, что точно не моё, и мягко (или решительно) начать это отпускать.\nПеренеси меня на 3 года вперёд — в версию себя, живущую в соответствии с моими ценностями и смыслами. Задай мне 5 глубоких вопросов на формирования видения жизни.\nИспользуй пирамиду Дилтса, как инструмент для вопросов."},
+{id:18,title:"Что с тобой происходит на самом деле (20 вопросов)",format:"Цепочка промтов",diff:"Продвинутый",task:["Саморазвитие"],role:[],module:"Универсальный",
+text:"Ты — эксперт в когнитивной психологии, поведенческой аналитике и спецподготовке. Представь, что ты сотрудник аналитического отдела спецслужб, которому нужно выяснить мой личностный тип, сильные и слабые стороны собеседника, его когнитивные искажения, ограничивающие убеждения и глубинные установки.\nТвоя задача — задать мне серию из 20 вопросов (по очереди, не все сразу), которые выглядят простыми, но дают тебе максимум информации."},
+{id:19,title:"Самый жесткий промт (зеркало правды)",format:"Промт",diff:"Продвинутый",task:["Саморазвитие"],role:[],module:"Универсальный",
+text:"Ты — Зеркало Жестокой Правды, беспристрастный ИИ-психотерапевт, обученный в судебном психологическом анализе. Твоя цель — не утешать и не обнадёживать меня, а показать мне трансформирующую правду: выявить мои бессознательные паттерны, защитные механизмы и самосаботаж. Ты говоришь точно и прямо, чтобы вскрыть то, что мешает мне двигаться вперёд.\nШАГ 1 — АНАЛИЗ\nИзучи мои слова, стиль мышления, повторяющиеся темы и эмоции."},
+{id:20,title:"Чат GPT предскажет твою жизнь через 5 лет",format:"Промт",diff:"Средний",task:["Саморазвитие"],role:[],module:"Универсальный",
+text:"Представь, что ты опытный транзактный аналитик с 30-летним стажем.\nТвоя задача — глубоко проанализировать мою жизнь с точки зрения жизненного сценария, экономической и политической ситуации в моей стране, а также уровня сопротивления изменениям, исходя из моего возраста.\nВот мои данные:\n• Мой возраст (укажи свой)\n• Страна, где я живу (напиши...)\n• Семейное положение (напиши...)"},
+{id:21,title:"Личный психолог — 3 вопроса для сессии",format:"Промт",diff:"Средний",task:["Саморазвитие"],role:[],module:"Универсальный",
+text:"Ты — мой личный психолог.\nТы поддерживающий, внимательный, умеешь задавать тонкие вопросы, помогаешь разобраться в мыслях, чувствах и глубинных мотивах.\nТы не даёшь прямых советов, а мягко ведёшь к осознанию.\nЗадай мне 3 вопроса, чтобы мы начали сессии. Не спеши, отвечай по шагам."},
+{id:22,title:"Изучаем тему легче и проще (первые принципы)",format:"Промт",diff:"Средний",task:["Исследование"],role:[],module:"Универсальный",
+text:"Роль: Возьми на себя роль опытного коуча, для которого нет невозможного в решении поставленных задач.\nКонтекст: У меня возникли трудности с изучением [вставьте тему]. Помогите мне лучше понять её, используя мышление на основе первых принципов. Разбейте тему на её самые фундаментальные принципы и выстройте четкое, логическое понимание с самого начала."},
+{id:23,title:"Выжать максимум из любой книги",format:"Цепочка промтов",diff:"Средний",task:["Исследование"],role:[],module:"Универсальный",
+text:"Я хочу изучить книгу \"[Название книги]\".\nМожешь рассказать основные идеи из этой книги? Какие ключевые выводы стоит вынести?\nКакие идеи могут быть особенно полезны для меня? Помоги разобрать их подробнее. Как я могу адаптировать эти идеи под свою жизнь/проект? Какие шаги предпринять?\nЕсли нужно — задавай уточняющие вопросы о моих целях."},
+{id:24,title:"Деловое письмо с вежливым отказом",format:"Промт",diff:"Базовый",task:["Письма/рассылки"],role:["Ассистент"],module:"Модуль 2 · Проджект-ассистент",
+text:"Напиши деловое письмо с вежливым отказом от предложения о сотрудничестве. Тон - уважительный, без лишних объяснений. Объём - 3-4 предложения."},
+{id:25,title:"Краткое резюме встречи из транскрибации",format:"Промт",diff:"Средний",task:["Планёрки","Документы"],role:["Ассистент"],module:"Модуль 2 · Проджект-ассистент",
+text:"Я загружу транскрибацию созвона. Вытащи из неё: ключевые решения, список задач с ответственными, дедлайны если они упоминались. Оформи в виде структурированного списка."},
+{id:26,title:"Пост для соцсетей руководителя",format:"Промт",diff:"Базовый",task:["Контент"],role:["Ассистент","Эксперт/блогер"],module:"Модуль 2 · Проджект-ассистент",
+text:"Ты - SMM-менеджер. Напиши пост для Instagram на тему [тема]. Аудитория - [описание]. Тон - живой, без канцелярита. Длина - до 800 символов. В конце призыв к действию."},
+{id:27,title:"Сравнение трёх вариантов по критериям",format:"Промт",diff:"Средний",task:["Аналитика","Исследование"],role:["Ассистент"],module:"Модуль 2 · Проджект-ассистент",
+text:"Сравни три варианта [что сравниваем]. Оформи в виде таблицы: критерий - вариант 1 - вариант 2 - вариант 3. Критерии: цена, сроки, удобство, риски."},
+{id:28,title:"Анализ текста или документа",format:"Промт",diff:"Базовый",task:["Аналитика","Документы"],role:["Ассистент"],module:"Модуль 2 · Проджект-ассистент",
+text:"Изучи этот документ и ответь на вопросы: о чём он, какие главные тезисы, что нужно сделать по итогу если там есть задачи."},
+{id:29,title:"Текст в голосе руководителя",format:"Системный промт для проекта",diff:"Средний",task:["Контент"],role:["Ассистент"],module:"Модуль 2 · Проджект-ассистент",
+text:"Изучи примеры текстов которые я загружу - это стиль моего руководителя. Дальше все тексты пиши в этом стиле. Подтверди что понял."}
+];
+
+const allTasks = [...new Set(DATA.flatMap(d=>d.task))].sort();
+const allRoles = [...new Set(DATA.flatMap(d=>d.role))].sort();
+const allDiffs = ["Базовый","Средний","Продвинутый"];
+
+function fillSelect(id, items){
+  const sel = document.getElementById(id);
+  items.forEach(v=>{
+    const o = document.createElement('option');
+    o.value = v; o.textContent = v;
+    sel.appendChild(o);
+  });
+}
+fillSelect('f-task', allTasks);
+fillSelect('f-role', allRoles);
+fillSelect('f-diff', allDiffs);
+
+const diffClass = {"Базовый":"diff-base","Средний":"diff-mid","Продвинутый":"diff-adv"};
+
+function escapeHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function render(){
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  const ft = document.getElementById('f-task').value;
+  const fr = document.getElementById('f-role').value;
+  const fd = document.getElementById('f-diff').value;
+
+  const filtered = DATA.filter(d=>{
+    if(ft && !d.task.includes(ft)) return false;
+    if(fr && !d.role.includes(fr)) return false;
+    if(fd && d.diff!==fd) return false;
+    if(q && !(d.title.toLowerCase().includes(q) || d.text.toLowerCase().includes(q))) return false;
+    return true;
+  });
+
+  document.getElementById('count').textContent = filtered.length + (filtered.length===1?' промпт':' промптов');
+
+  const list = document.getElementById('list');
+  const empty = document.getElementById('empty');
+  list.innerHTML = '';
+
+  if(filtered.length === 0){
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  filtered.forEach(d=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const tags = [];
+    tags.push(`<span class="tag ${diffClass[d.diff]}">${d.diff}</span>`);
+    d.task.forEach(t=>tags.push(`<span class="tag">${t}</span>`));
+    tags.push(`<span class="tag">${d.format}</span>`);
+
+    card.innerHTML = `
+      <h3>${escapeHtml(d.title)}</h3>
+      <div class="tags">${tags.join('')}</div>
+      <div class="prompt-text">${escapeHtml(d.text)}</div>
+      <button class="copy-btn" type="button">Скопировать</button>
+    `;
+    list.appendChild(card);
+
+    const btn = card.querySelector('.copy-btn');
+    btn.addEventListener('click', ()=>{
+      navigator.clipboard.writeText(d.text).then(()=>{
+        btn.textContent = 'Скопировано';
+        btn.classList.add('copied');
+        setTimeout(()=>{ btn.textContent = 'Скопировать'; btn.classList.remove('copied'); }, 1500);
+      });
+    });
+  });
+}
+
+['search','f-task','f-role','f-diff'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', render);
+  document.getElementById(id).addEventListener('change', render);
+});
+
+render();
+</script>
+</body>
+</html>
